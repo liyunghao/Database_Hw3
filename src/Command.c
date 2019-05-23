@@ -9,6 +9,8 @@ CMD_t cmd_list[] = {
     { ".help", 5, BUILT_IN_CMD },
     { "insert", 6, QUERY_CMD },
     { "select", 6, QUERY_CMD },
+    { "update", 6, QUERY_CMD },
+    { "delete", 6, QUERY_CMD },
     { "", 0, UNRECOG_CMD },
 };
 
@@ -63,23 +65,79 @@ error:
 /// Add select fields
 ///
 int add_select_field(Command_t *cmd, const char *argument) {
-    size_t fields_len = cmd->cmd_args.sel_args.fields_len;
+    size_t fields_len = cmd->sel_args.fields_len;
     char **buf = (char**)malloc(sizeof(char*) * (fields_len+1));
     if (buf == NULL) {
         return 0;
     }
 
-    if (cmd->cmd_args.sel_args.fields) {
-        memcpy(buf, cmd->cmd_args.sel_args.fields, sizeof(char*) * fields_len);
-        free(cmd->cmd_args.sel_args.fields);
+    if (cmd->sel_args.fields) {
+        memcpy(buf, cmd->sel_args.fields, sizeof(char*) * fields_len);
+        free(cmd->sel_args.fields);
     }
 
-    cmd->cmd_args.sel_args.fields = buf;
-    cmd->cmd_args.sel_args.fields[fields_len] = strdup(argument);
-    cmd->cmd_args.sel_args.fields_len++;
+    cmd->sel_args.fields = buf;
+    cmd->sel_args.fields[fields_len] = strdup(argument);
+    cmd->sel_args.fields_len++;
+    return 1;
+}
+int add_aggre(Command_t *cmd, char *arg) {
+    size_t fields_len = cmd->aggre_args.fields_len;
+    char **buf1 = (char**)malloc(sizeof(char*) * (fields_len+1));
+    char **buf2 = (char**)malloc(sizeof(char*) * (fields_len+1));
+    if (buf1 == NULL || buf2 == NULL) {
+        return 0;
+    }
+
+    char *type, *fields;
+    type = strtok(arg, "()");
+    fields = strtok(NULL, "()");
+    if (cmd->aggre_args.type) {
+        memcpy(buf1, cmd->aggre_args.type, sizeof(char*) * fields_len);
+        free(cmd->aggre_args.type);
+    }
+    if (cmd->aggre_args.fields) {
+        memcpy(buf2, cmd->aggre_args.fields, sizeof(char*) * fields_len);
+        free(cmd->aggre_args.fields);
+    }
+    cmd->aggre_args.type = buf1;
+    cmd->aggre_args.fields = buf2;
+    cmd->aggre_args.type[fields_len] = strdup(type);
+    cmd->aggre_args.fields[fields_len] = strdup(fields);
+    cmd->aggre_args.fields_len++;
     return 1;
 }
 
+int add_where_field(Command_t *cmd, const char *arg1, const char *arg2, const char *arg3) {
+    size_t fields_len = cmd->whe_args.fields_len;
+    char **buf1 = (char**)malloc(sizeof(char*) * (fields_len+1));
+    char **buf2 = (char**)malloc(sizeof(char*) * (fields_len+1));
+    char **buf3 = (char**)malloc(sizeof(char*) * (fields_len+1));
+    if (buf1 == NULL || buf2 == NULL || buf3 == NULL) {
+        return 0;
+    }
+
+    if (cmd->whe_args.fields) {
+        memcpy(buf1, cmd->whe_args.fields, sizeof(char*) * fields_len);
+        free(cmd->whe_args.fields);
+    }
+    if (cmd->whe_args.operators) {
+        memcpy(buf2, cmd->whe_args.operators, sizeof(char*) * fields_len);
+        free(cmd->whe_args.operators);
+    }
+    if (cmd->whe_args.conditions) {
+        memcpy(buf3, cmd->whe_args.conditions, sizeof(char*) * fields_len);
+        free(cmd->whe_args.conditions);
+    }
+    cmd->whe_args.fields = buf1;
+    cmd->whe_args.operators = buf2;
+    cmd->whe_args.conditions = buf3;
+    cmd->whe_args.fields[fields_len] = strdup(arg1);
+    cmd->whe_args.operators[fields_len] = strdup(arg2);
+    cmd->whe_args.conditions[fields_len] = strdup(arg3);
+    cmd->whe_args.fields_len++;
+    return 1;
+}
 ///
 /// Free the allocated arguments, but without free the argument buffer
 ///
@@ -90,13 +148,13 @@ void cleanup_Command(Command_t *cmd) {
         cmd->args[idx] = NULL;
     }
     if (cmd->type == SELECT_CMD) {
-        for (idx = 0; idx < cmd->cmd_args.sel_args.fields_len; idx++) {
-            free(cmd->cmd_args.sel_args.fields[idx]);
-            cmd->cmd_args.sel_args.fields[idx] = NULL;
+        for (idx = 0; idx < cmd->sel_args.fields_len; idx++) {
+            free(cmd->sel_args.fields[idx]);
+            cmd->sel_args.fields[idx] = NULL;
         }
-        free(cmd->cmd_args.sel_args.fields);
-        cmd->cmd_args.sel_args.fields = NULL;
-        cmd->cmd_args.sel_args.fields_len = 0;
+        free(cmd->sel_args.fields);
+        cmd->sel_args.fields = NULL;
+        cmd->sel_args.fields_len = 0;
     }
     cmd->type = UNRECOG_CMD;
     cmd->args_len = 0;
