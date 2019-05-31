@@ -1,5 +1,9 @@
 #include <stdio.h>
+<<<<<<< HEAD
 #include <stdio_ext.h>
+=======
+//#include <stdio_ext.h>
+>>>>>>> 1107c21686f5228f2543b829eb534a1ab4ca81c5
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -58,8 +62,13 @@ void print_user(User_t *user, SelectArgs_t *sel_args) {
 void print_aggre(Table_t *table, int *idxList, size_t idxListLen, Command_t *cmd) {
     if (cmd->aggre_args.fields_len == 0) return;
     size_t idx;
+<<<<<<< HEAD
     int limit = cmd->cmd_args.sel_args.limit;
     int offset = cmd->cmd_args.sel_args.offset;
+=======
+    int limit = cmd->sel_args.limit;
+    int offset = cmd->sel_args.offset;
+>>>>>>> 1107c21686f5228f2543b829eb534a1ab4ca81c5
 
     if (offset == -1) {
         offset = 0;
@@ -104,8 +113,8 @@ void print_aggre(Table_t *table, int *idxList, size_t idxListLen, Command_t *cmd
 ///
 void print_users(Table_t *table, int *idxList, size_t idxListLen, Command_t *cmd) {
     size_t idx;
-    int limit = cmd->cmd_args.sel_args.limit;
-    int offset = cmd->cmd_args.sel_args.offset;
+    int limit = cmd->sel_args.limit;
+    int offset = cmd->sel_args.offset;
 
     if (offset == -1) {
         offset = 0;
@@ -114,7 +123,11 @@ void print_users(Table_t *table, int *idxList, size_t idxListLen, Command_t *cmd
         if (limit != -1 && (idx - offset) >= limit) {
             break;
         }
+<<<<<<< HEAD
         print_user(get_User(table, idxList[idx]), &(cmd->cmd_args.sel_args));
+=======
+        print_user(get_User(table, idxList[idx]), &(cmd->sel_args));
+>>>>>>> 1107c21686f5228f2543b829eb534a1ab4ca81c5
     }
 }
 
@@ -287,7 +300,11 @@ void handle_builtin_cmd(Table_t *table, Command_t *cmd, State_t *state) {
                 if (dup2(fd, 1) == -1) {
                     state->saved_stdout = -1;
                 }
+<<<<<<< HEAD
                  __fpurge(stdout); //This is used to clear the stdout buffer
+=======
+//                 __fpurge(stdout); //This is used to clear the stdout buffer
+>>>>>>> 1107c21686f5228f2543b829eb534a1ab4ca81c5
             }
         }
     } else if (!strncmp(cmd->args[0], ".load", 5)) {

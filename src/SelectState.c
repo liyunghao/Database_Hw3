@@ -39,10 +39,17 @@ void delete_state_handler(Command_t *cmd, size_t arg_idx) {
     }
 }
 void field_state_handler(Command_t *cmd, size_t arg_idx) {
+<<<<<<< HEAD
     cmd->cmd_args.sel_args.fields = NULL;
     cmd->cmd_args.sel_args.fields_len = 0;
     cmd->cmd_args.sel_args.limit = -1;
     cmd->cmd_args.sel_args.offset = -1;
+=======
+    cmd->sel_args.fields = NULL;
+    cmd->sel_args.fields_len = 0;
+    cmd->sel_args.limit = -1;
+    cmd->sel_args.offset = -1;
+>>>>>>> 1107c21686f5228f2543b829eb534a1ab4ca81c5
     cmd->whe_args.fields = NULL;
     cmd->whe_args.fields_len = 0;
     cmd->whe_args.operators = NULL;
@@ -129,7 +136,7 @@ void table_state_handler(Command_t *cmd, size_t arg_idx) {
 
 void offset_state_handler(Command_t *cmd, size_t arg_idx) {
     if (arg_idx < cmd->args_len) {
-        cmd->cmd_args.sel_args.offset = atoi(cmd->args[arg_idx]);
+        cmd->sel_args.offset = atoi(cmd->args[arg_idx]);
 
         arg_idx++;
 
@@ -148,7 +155,7 @@ void offset_state_handler(Command_t *cmd, size_t arg_idx) {
 
 void limit_state_handler(Command_t *cmd, size_t arg_idx) {
     if (arg_idx < cmd->args_len) {
-        cmd->cmd_args.sel_args.limit = atoi(cmd->args[arg_idx]);
+        cmd->sel_args.limit = atoi(cmd->args[arg_idx]);
 
         arg_idx++;
 

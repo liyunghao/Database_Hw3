@@ -49,16 +49,23 @@ typedef struct AggreArgs {
     size_t fields_len;
 
 } AggreArgs_t;
+<<<<<<< HEAD
 typedef union {
     SelectArgs_t sel_args;
 } CmdArg_t;
+=======
+>>>>>>> 1107c21686f5228f2543b829eb534a1ab4ca81c5
 
 typedef struct Command {
     unsigned char type;
     char **args;
     size_t args_len;
     size_t args_cap;
+<<<<<<< HEAD
     CmdArg_t cmd_args;
+=======
+    SelectArgs_t sel_args;
+>>>>>>> 1107c21686f5228f2543b829eb534a1ab4ca81c5
     WhereArgs_t whe_args;
     UpdateArgs_t up_args;
     AggreArgs_t aggre_args;
